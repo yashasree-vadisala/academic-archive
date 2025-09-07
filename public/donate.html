@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Items - Academic Archive</title>
+    <link rel="stylesheet" href="doncss.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <span class="logo-icon">📚</span>
+                    <span class="logo-text">Academic Archive</span>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="browse.html" class="nav-link">Browse</a>
+                <a href="index.html" class="btn btn-outline" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="donate-container">
+        <div class="donate-header">
+            <div class="header-icon">💝</div>
+            <h1>Donate Academic Items</h1>
+            <p>Share your unused academic materials to help fellow students succeed</p>
+        </div>
+
+        <div class="donate-form-container">
+            <form id="donateForm" class="donate-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="itemName">Item Name *</label>
+                        <input type="text" id="itemName" name="itemName" placeholder="e.g., Engineering Mathematics Textbook" required>
+                        <div class="error-message" id="itemNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="textbooks">📖 Textbooks</option>
+                            <option value="notes">📝 Notes</option>
+                            <option value="stationery">✏ Stationery</option>
+                            <option value="drafters">📐 Drafters</option>
+                            <option value="printouts">🖨 Printouts</option>
+                        </select>
+                        <div class="error-message" id="categoryError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description *</label>
+                    <textarea id="description" name="description" placeholder="Describe the condition, content, and any other relevant details..." rows="4" required></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span>/500 characters
+                    </div>
+                    <div class="error-message" id="descriptionError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Upload Image</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <input type="file" id="image" name="image" accept="image/*" hidden>
+                        <div class="upload-content">
+                            <div class="upload-icon">📷</div>
+                            <p>Click to upload an image</p>
+                            <span>PNG, JPG up to 5MB</span>
+                        </div>
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
+                </div>
+
+                <div class="contact-section">
+                    <h3>Contact Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="donorName">Your Name *</label>
+                            <input type="text" id="donorName" name="donorName" placeholder="Enter your full name" required>
+                            <div class="error-message" id="donorNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            <div class="error-message" id="emailError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobile">Mobile Number *</label>
+                        <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+                        <div class="error-message" id="mobileError"></div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span class="btn-text">Donate Item</span>
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="donation-tips">
+            <h3>💡 Tips for Better Donations</h3>
+            <div class="tips-grid">
+                <div class="tip-item">
+                    <div class="tip-icon">📸</div>
+                    <p>Add clear photos to increase interest</p>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">📝</div>
+                    <p>Write detailed descriptions</p>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">✅</div>
+                    <p>Mention the condition honestly</p>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-icon">📞</div>
+                    <p>Respond quickly to requests</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/donate.js"></script>
+</body>
+</html>

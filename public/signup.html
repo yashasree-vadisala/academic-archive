@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Academic Archive</title>
+    <link rel="stylesheet" href="style3.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <span class="logo-icon">📚</span>
+                    <span class="logo-text">Academic Archive</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="signup-container">
+        <div class="signup-box">
+            <div class="signup-header">
+                <div class="signup-icon">✨</div>
+                <h1>Join Academic Archive</h1>
+                <p>Create your account to start sharing and discovering resources</p>
+            </div>
+
+            <form id="signupForm" class="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="error-message" id="nameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="error-message" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <button type="button" class="toggle-password" id="togglePassword">👁</button>
+                    </div>
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="requirement" id="lengthReq">
+                            <span class="req-icon">❌</span>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="requirement" id="upperReq">
+                            <span class="req-icon">❌</span>
+                            <span>At least 1 uppercase letter</span>
+                        </div>
+                        <div class="requirement" id="specialReq">
+                            <span class="req-icon">❌</span>
+                            <span>At least 1 special character</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔓</span>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                        <button type="button" class="toggle-password" id="toggleConfirmPassword">👁</button>
+                    </div>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="btn-text">Create Account</span>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                </button>
+
+                <div class="signup-footer">
+                    <p>Already have an account? <a href="login.html">Sign in here</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/signup.js"></script>
+</body>
+</html>

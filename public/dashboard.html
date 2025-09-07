@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Academic Archive</title>
+    <link rel="stylesheet" href="dashcss.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <span class="logo-icon">📚</span>
+                    <span class="logo-text">Academic Archive</span>
+                </a>
+            </div>
+            <div class="nav-buttons">
+                <a href="browse.html" class="nav-link">Browse</a>
+                <a href="donate.html" class="nav-link">Donate</a>
+                <a href="index.html" class="btn btn-outline" id="logoutBtn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 id="welcomeMessage">Welcome to Your Dashboard</h1>
+            <p>Choose how you'd like to contribute to the Academic Archive community</p>
+        </div>
+
+        <div class="action-cards">
+            <a href="donate.html" class="action-card donate-card">
+                <div class="card-icon">📤</div>
+                <h2>Donate Items</h2>
+                <p>Share your unused academic materials with fellow students. Upload textbooks, notes, stationery, and more to help others succeed.</p>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a href="browse.html" class="action-card browse-card">
+                <div class="card-icon">🔍</div>
+                <h2>Browse Items</h2>
+                <p>Discover and request academic resources shared by other students. Find exactly what you need for your studies.</p>
+                <div class="card-arrow">→</div>
+            </a>
+        </div>
+
+        <div class="stats-section">
+            <h3>Quick Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-number" id="statDonations">0</div>
+                    <div class="stat-label">Available Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number" id="statUsers">0</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏱</div>
+                    <div class="stat-number" id="statAvgResponse">0.00</div>
+                    <div class="stat-label">Avg Response (hrs)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h3>Recent Activity</h3>
+            <div class="activity-list" id="activityList">
+                <p>Loading recent activity...</p>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3>Ready to Make a Difference?</h3>
+            <div class="cta-buttons">
+                <a href="donate.html" class="btn btn-primary">
+                    <span>Start Donating</span>
+                    <span>📤</span>
+                </a>
+                <a href="browse.html" class="btn btn-secondary">
+                    <span>Explore Resources</span>
+                    <span>🔍</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Error message div -->
+        <div id="dashboardError" class="error-message"></div>
+    </main>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
