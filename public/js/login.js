@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
 
+  // 👇 Auto-select correct backend URL (local vs deployed)
+  const API_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000/api"
+      : "https://academic-archive-5.onrender.com/api";
+
   // Toggle password visibility
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
@@ -44,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.classList.add("loading");
 
       try {
-        const res = await fetch("/auth/login", {
+        const res = await fetch(`${API_BASE_URL}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -57,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
           alert("✅ Login successful!");
-          // Add delay to ensure alert is visible before redirect
           setTimeout(() => {
             window.location.href = "dashboard.html";
           }, 1000);
@@ -68,9 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
         console.error("Network error:", err);
         submitBtn.classList.remove("loading");
-        // Only show network error for actual connection issues
+
         if (err.name === "TypeError" && err.message.includes("Failed to fetch")) {
-          document.getElementById("emailError").textContent = "Network error, please check your connection and try again.";
+          document.getElementById("emailError").textContent =
+            "Network error, please check your connection and try again.";
           document.getElementById("emailError").classList.add("show", "shake");
         }
       }
