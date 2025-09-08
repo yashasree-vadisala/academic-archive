@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const togglePassword = document.getElementById("togglePassword");
   const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
 
+  // 🔗 Base URL for backend API
+  const API_BASE_URL = "https://academic-archive-5.onrender.com";
+
   // Toggle password visibility
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
@@ -109,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         console.log("Sending request to /auth/register", { name, email });
-        const res = await fetch("/auth/register", {
+        const res = await fetch(`${API_BASE_URL}/auth/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
