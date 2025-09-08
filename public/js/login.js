@@ -4,17 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
 
-  // 👇 Auto-detect correct backend (local vs deployed)
-  const API_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000/api"
-      : "https://academic-archive-5.onrender.com/api";
+  // ✅ Change this to your deployed backend URL
+  const API_BASE_URL = "https://academic-archive-5.onrender.com";
 
   // Toggle password visibility
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
-      const type =
-        passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
       passwordInput.setAttribute("type", type);
       togglePassword.textContent = type === "password" ? "👁" : "👁‍🗨";
     });
@@ -57,11 +53,10 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ email, password }),
         });
 
-        // Try parsing only if response is JSON
-        let data = {};
+        let data;
         try {
           data = await res.json();
-        } catch {
+        } catch (jsonErr) {
           throw new Error("Invalid JSON response from server");
         }
 
@@ -71,12 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
           alert("✅ Login successful!");
+          // Add delay to ensure alert is visible before redirect
           setTimeout(() => {
             window.location.href = "dashboard.html";
           }, 1000);
         } else {
-          document.getElementById("emailError").textContent =
-            data.error || "Login failed";
+          document.getElementById("emailError").textContent = data.error || "Login failed";
           document.getElementById("emailError").classList.add("show", "shake");
         }
       } catch (err) {
@@ -84,7 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.classList.remove("loading");
 
         document.getElementById("emailError").textContent =
-          err.message || "Network error, please try again.";
+          err.message.includes("Invalid JSON")
+            ? "⚠️ Server error: received invalid response"
+            : "Network error, please check your connection and try again.";
         document.getElementById("emailError").classList.add("show", "shake");
       }
     });
