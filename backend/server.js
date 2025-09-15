@@ -17,7 +17,12 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+// Restrict CORS to CLIENT_ORIGIN if set, fallback to '*'
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || '*',
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Ensure uploads folder exists
@@ -72,7 +77,7 @@ const itemSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { type: String, required: true },
   condition: { type: String, required: true },
-  imageUrl: { type: String, default: null }, // Ensure default is null
+  imageUrl: { type: String, default: null },
   donor: {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -123,7 +128,13 @@ app.post('/auth/register', async (req, res) => {
 
     res.status(201).json({ userId: user._id, message: 'User registered successfully' });
   } catch (err) {
-    res.status(500).json({ error: 'Server error: ' + err.message });
+    console.error('Register error:', {
+      message: err.message,
+      code: err.code,
+      name: err.name,
+      stack: err.stack,
+    });
+    res.status(500).json({ error: 'Server error: ' + (err.message || 'Unknown error') });
   }
 });
 
@@ -281,7 +292,7 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
         category: item.category,
         createdAt: item.createdAt,
         userName: item.donor.name,
-        imageUrl: item.imageUrl, // Include imageUrl
+        imageUrl: item.imageUrl,
       })));
 
     const requests = await Request.find()
@@ -295,7 +306,7 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
         title: req.donationId.title,
         createdAt: req.createdAt,
         userName: req.requesterId.name,
-        imageUrl: req.donationId.imageUrl, // Include imageUrl
+        imageUrl: req.donationId.imageUrl,
       })));
 
     const activities = [...donations, ...requests]
