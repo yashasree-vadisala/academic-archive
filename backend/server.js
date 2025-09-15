@@ -1,4 +1,3 @@
-
 // backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
@@ -13,6 +12,7 @@ const fs = require('fs');
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
+// Use Render's dynamic port or fallback to 5000
 const PORT = process.env.PORT || 5000;
 
 // Middleware
@@ -40,14 +40,22 @@ const upload = multer({
   },
 });
 
-// MongoDB Connection
+// MongoDB Connection with detailed error handling
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => {
+    console.error('MongoDB connection error:', {
+      message: err.message,
+      code: err.code,
+      name: err.name,
+      stack: err.stack,
+    });
+    process.exit(1); // Exit if connection fails
+  });
 
 // User Model
 const userSchema = new mongoose.Schema({
@@ -64,7 +72,7 @@ const itemSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { type: String, required: true },
   condition: { type: String, required: true },
-  imageUrl: { type: String },
+  imageUrl: { type: String, default: null }, // Ensure default is null
   donor: {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -115,7 +123,7 @@ app.post('/auth/register', async (req, res) => {
 
     res.status(201).json({ userId: user._id, message: 'User registered successfully' });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -134,7 +142,8 @@ app.post('/auth/login', async (req, res) => {
 
     res.json({ token, user: { _id: user._id, name: user.name, email: user.email }, message: 'Login successful' });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -157,7 +166,7 @@ app.post('/api/donations', authMiddleware, upload.single('image'), async (req, r
     await item.save();
     res.status(201).json({ success: true, message: 'Item donated successfully', data: item });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -180,7 +189,7 @@ app.get('/api/donations', async (req, res) => {
       .populate('userId', 'name email');
     res.json({ success: true, data: items });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -206,7 +215,7 @@ app.post('/api/donations/:id/request', authMiddleware, async (req, res) => {
       message: 'Donor contact information retrieved successfully',
     });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -234,7 +243,7 @@ app.delete('/api/donations/:id', authMiddleware, async (req, res) => {
     await item.deleteOne();
     res.json({ success: true, message: 'Item deleted successfully' });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -255,7 +264,7 @@ app.get('/api/stats', async (req, res) => {
       avgResponse: avgResponse[0]?.avgTime ? (avgResponse[0].avgTime / (1000 * 60 * 60)).toFixed(2) : '0.00', // Hours
     });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
@@ -264,7 +273,7 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
     const donations = await Item.find({ status: 'available' })
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('title category createdAt donor.name')
+      .select('title category createdAt donor.name imageUrl')
       .lean()
       .then(items => items.map(item => ({
         type: 'donation',
@@ -272,12 +281,13 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
         category: item.category,
         createdAt: item.createdAt,
         userName: item.donor.name,
+        imageUrl: item.imageUrl, // Include imageUrl
       })));
 
     const requests = await Request.find()
       .sort({ createdAt: -1 })
       .limit(5)
-      .populate('donationId', 'title')
+      .populate('donationId', 'title imageUrl')
       .populate('requesterId', 'name')
       .lean()
       .then(reqs => reqs.map(req => ({
@@ -285,6 +295,7 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
         title: req.donationId.title,
         createdAt: req.createdAt,
         userName: req.requesterId.name,
+        imageUrl: req.donationId.imageUrl, // Include imageUrl
       })));
 
     const activities = [...donations, ...requests]
@@ -293,7 +304,7 @@ app.get('/api/recent-activity', authMiddleware, async (req, res) => {
 
     res.json({ success: true, data: activities });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
 
