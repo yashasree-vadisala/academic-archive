@@ -16,14 +16,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(express.json());
-// Restrict CORS to CLIENT_ORIGIN if set, fallback to '*'
 const corsOptions = {
   origin: process.env.CLIENT_ORIGIN || '*',
-  optionsSuccessStatus: 200 // For legacy browser support
+  optionsSuccessStatus: 200
 };
+app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Middleware to log image access errors
+app.use((req, res, next) => {
+  if (req.path.startsWith('/uploads/')) {
+    const filePath = path.join(__dirname, '..', 'public', req.path);
+    if (!fs.existsSync(filePath)) {
+      console.error('Image not found:', req.path);
+    }
+  }
+  next();
+});
 
 // Ensure uploads folder exists
 const uploadsDir = path.join(__dirname, '..', 'public/uploads');
@@ -59,7 +69,7 @@ mongoose.connect(process.env.MONGO_URI, {
       name: err.name,
       stack: err.stack,
     });
-    process.exit(1); // Exit if connection fails
+    process.exit(1);
   });
 
 // User Model
@@ -272,7 +282,7 @@ app.get('/api/stats', async (req, res) => {
       users,
       totalItems,
       availableItems,
-      avgResponse: avgResponse[0]?.avgTime ? (avgResponse[0].avgTime / (1000 * 60 * 60)).toFixed(2) : '0.00', // Hours
+      avgResponse: avgResponse[0]?.avgTime ? (avgResponse[0].avgTime / (1000 * 60 * 60)).toFixed(2) : '0.00',
     });
   } catch (err) {
     res.status(500).json({ error: 'Server error: ' + err.message });
