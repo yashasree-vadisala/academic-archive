@@ -1,4 +1,3 @@
-
 // public/js/browse.js
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput');
@@ -60,21 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Display donations in the UI
   function displayDonations(donations) {
     const loggedInUserId = JSON.parse(localStorage.getItem('user'))?._id || '';
-    console.log('Logged in user ID:', loggedInUserId); // Debug
+    console.log('Logged in user ID:', loggedInUserId);
     donations.forEach(donation => {
-      console.log('Item userId:', donation.userId._id); // Debug
+      console.log('Item userId:', donation.userId._id);
       const itemCard = document.createElement('div');
       itemCard.className = 'item-card';
       itemCard.dataset.category = donation.category;
-      // Add Delete button only if the logged-in user is the uploader
       const deleteButton = donation.userId._id === loggedInUserId
         ? `<button class="delete-btn" data-id="${donation._id}">Delete</button>`
         : '';
       itemCard.innerHTML = `
         <div class="item-image">
-          <img src="${donation.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+          <img src="${donation.imageUrl || '/images/no-image.jpg'}" 
                alt="${donation.title}" 
-               onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+               onerror="this.onerror=null; this.src='/images/no-image.jpg';">
         </div>
         <div class="item-content">
           <h3>${donation.title}</h3>
@@ -152,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (result.success) {
         alert('✅ Item deleted successfully!');
-        currentPage = 1; // Reset to first page
-        loadDonations(1); // Refresh list
+        currentPage = 1;
+        loadDonations(1);
       } else {
         alert(`❌ ${result.error || 'Failed to delete item'}`);
       }
@@ -191,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       currentCategory = btn.dataset.category;
-      currentPage = 1; // Reset to first page
+      currentPage = 1;
       loadDonations(1);
     });
   });
@@ -199,14 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Search functionality
   searchBtn.addEventListener('click', () => {
     currentSearch = searchInput.value.trim();
-    currentPage = 1; // Reset to first page
+    currentPage = 1;
     loadDonations(1);
   });
 
   searchInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       currentSearch = searchInput.value.trim();
-      currentPage = 1; // Reset to first page
+      currentPage = 1;
       loadDonations(1);
     }
   });
@@ -214,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load more items
   loadMoreBtn.addEventListener('click', () => {
     currentPage++;
-    loadDonations(currentPage, true); // Append items
+    loadDonations(currentPage, true);
   });
 
   // Event delegation for contact and delete buttons
