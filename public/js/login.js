@@ -4,9 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
 
-  // ✅ Change this to your deployed backend URL
-  const API_BASE_URL = "https://academic-archive-5.onrender.com";
-
   // Toggle password visibility
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
@@ -47,19 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.classList.add("loading");
 
       try {
-        const res = await fetch(`${API_BASE_URL}/auth/login`, {
+        const res = await fetch("/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
 
-        let data;
-        try {
-          data = await res.json();
-        } catch (jsonErr) {
-          throw new Error("Invalid JSON response from server");
-        }
-
+        const data = await res.json();
         submitBtn.classList.remove("loading");
 
         if (res.ok && data.token) {
@@ -77,12 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
       } catch (err) {
         console.error("Network error:", err);
         submitBtn.classList.remove("loading");
-
-        document.getElementById("emailError").textContent =
-          err.message.includes("Invalid JSON")
-            ? "⚠️ Server error: received invalid response"
-            : "Network error, please check your connection and try again.";
-        document.getElementById("emailError").classList.add("show", "shake");
+        // Only show network error for actual connection issues
+        if (err.name === "TypeError" && err.message.includes("Failed to fetch")) {
+          document.getElementById("emailError").textContent = "Network error, please check your connection and try again.";
+          document.getElementById("emailError").classList.add("show", "shake");
+        }
       }
     });
   }
