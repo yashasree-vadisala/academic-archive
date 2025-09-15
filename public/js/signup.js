@@ -1,4 +1,3 @@
-
 // public/js/signup.js
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("signupForm");
@@ -6,9 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmPasswordInput = document.getElementById("confirmPassword");
   const togglePassword = document.getElementById("togglePassword");
   const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
-
-  // 🔗 Base URL for backend API
-  const API_BASE_URL = "https://academic-archive-5.onrender.com";
 
   // Toggle password visibility
   if (togglePassword && passwordInput) {
@@ -112,13 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         console.log("Sending request to /auth/register", { name, email });
-        const res = await fetch(`${API_BASE_URL}/auth/register`, {
+        const res = await fetch("/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),
         });
         const data = await res.json();
-        console.log("Response from /auth/register:", data);
+        console.log("Response from /auth/register:", { status: res.status, body: data });
 
         submitBtn.classList.remove("loading");
 
@@ -131,9 +127,13 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("Signup failed with error:", data.error);
         }
       } catch (err) {
-        console.error("Network error:", err);
+        console.error("Network or server error:", {
+          name: err.name,
+          message: err.message,
+          stack: err.stack,
+        });
         submitBtn.classList.remove("loading");
-        document.getElementById("emailError").textContent = "Network error, please try again.";
+        document.getElementById("emailError").textContent = "Network or server error, please try again.";
         document.getElementById("emailError").classList.add("show", "shake");
       }
     });
